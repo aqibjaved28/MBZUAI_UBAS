@@ -18,7 +18,17 @@ A lightweight, real-time user behavior tracking system built using FastAPI, Redi
 
 ---
 
-<pre lang="markdown"><code> ## 📂 Project Structure ``` MBZUAI-UBAS/ ├── main.py # FastAPI application with endpoints ├── event_worker.py # Redis stream consumer and DB writer ├── db.py # Centralized PostgreSQL connection logic ├── test_user_behavior_api.py # Unit tests using Pytest ├── requirements.txt # Python dependencies ├── README.md # Project documentation └── sql/ └── create_table.sql # PostgreSQL table schema ``` </code></pre>
+```
+MBZUAI-UBAS/
+├── main.py                     # FastAPI application with endpoints
+├── event_worker.py             # Redis stream consumer and DB writer
+├── db.py                       # Centralized PostgreSQL connection logic
+├── test_user_behavior_api.py   # Unit tests using Pytest
+├── requirements.txt            # Python dependencies
+├── README.md                   # Project documentation
+└── sql/
+    └── create_table.sql        # PostgreSQL table schema
+```
 
 ---
 
