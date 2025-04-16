@@ -22,8 +22,9 @@ A lightweight, real-time user behavior tracking system built using FastAPI, Redi
 MBZUAI-UBAS/
 ├── main.py                     # FastAPI application with endpoints
 ├── event_worker.py             # Redis stream consumer and DB writer
-├── db.py                       # Centralized PostgreSQL connection logic
+├── config.py                   # Centralized PostgreSQL and Redis connection logic
 ├── test_user_behavior_api.py   # Unit tests using Pytest
+├── .env.example                # Centralized PostgreSQL and Redis credentials setup
 ├── requirements.txt            # Python dependencies
 ├── README.md                   # Project documentation
 └── sql/
@@ -55,7 +56,24 @@ venv\\Scripts\\activate    # Windows
 ```bash
 pip install -r requirements.txt    # Windows
 ```
-4. 🗃️ Create PostgreSQL database & table 
+4. 🔧 Configure .env
+```bash
+cp .env.example .env   
+```
+```bash
+# PostgreSQL Config
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=your_database_name
+DB_USER=your_db_username
+DB_PASSWORD=your_db_password
+
+# Redis Config
+REDIS_HOST=localhost
+REDIS_PORT=6379
+REDIS_STREAM_KEY=user_behavior_stream  
+```
+5. 🗃️ Create PostgreSQL database & table 
 Install PostgreSQL from https://www.postgresql.org
 ```bash
 # In psql or pgAdmin
@@ -75,24 +93,24 @@ CREATE TABLE user_behavior (
   ip_address VARCHAR
 );
 ```
-5. Install and Run Redis (Windows using WSL)
-5.1. **Enable WSL and Virtual Machine Platform**  
+6. Install and Run Redis (Windows using WSL)
+6.1. **Enable WSL and Virtual Machine Platform**  
    Open PowerShell as Administrator and run:
 
 ```bash
 wsl --install
 Make sure virtualization is enabled in BIOS and Ubuntu is installed from Microsoft Store.
 ```
-5.2. Launch Ubuntu (WSL terminal) and install Redis:
+6.2. Launch Ubuntu (WSL terminal) and install Redis:
 ```bash
 sudo apt update
 sudo apt install redis
 ```
-5.3. Start Redis server inside Ubuntu:
+6.3. Start Redis server inside Ubuntu:
 ```bash
 sudo service redis-server start
 ```
-5.4. Verify Redis is running:
+6.4. Verify Redis is running:
 ```bash
 redis-cli ping
 # Expected Output: PONG

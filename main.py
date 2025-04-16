@@ -1,25 +1,19 @@
 from fastapi import FastAPI, HTTPException, Request, Query
 from pydantic import BaseModel, Field
 from uuid import uuid4
-from datetime import datetime
-import redis
+from datetime import datetime, timezone
 import json
 import psycopg2
 import psycopg2.extras
-from psycopg2.extras import Json
 from typing import Optional
 import logging
 from contextlib import asynccontextmanager
-from db import get_db_connection
+from config import get_db_connection, redis_client, STREAM_KEY
 from datetime import datetime, UTC
 
 # Logging setup
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
-# Redis setup
-redis_client = redis.Redis(host='localhost', port=6379, db=0)
-REDIS_STREAM = "user_behavior_stream"
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -49,6 +43,8 @@ class UserEvent(BaseModel):
     page_url: Optional[str] = None
     device_type: Optional[str] = None
     metadata: dict = Field(default_factory=dict)
+    timestamp: Optional[datetime] = None
+    ip_address: Optional[str] = None
 
 @app.post("/track-event")
 async def track_event(event: UserEvent, request: Request):
@@ -60,10 +56,10 @@ async def track_event(event: UserEvent, request: Request):
             "page_url": event.page_url or "",
             "device_type": event.device_type or "",
             "metadata": json.dumps(event.metadata),
-            "timestamp": datetime.now(UTC).isoformat(),
+            "timestamp": event.timestamp.isoformat() if event.timestamp else datetime.now(timezone.utc).isoformat(),
             "ip_address": request.client.host
         }
-        redis_client.xadd(REDIS_STREAM, event_data)
+        redis_client.xadd(STREAM_KEY, event_data)
         logger.info("Event queued successfully.")
         return {"message": "Event received and queued successfully."}
     except Exception as e:

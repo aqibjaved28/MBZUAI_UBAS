@@ -1,20 +1,44 @@
-# Byte-compiled / cache
+# Python
 __pycache__/
 *.py[cod]
+*.pyo
+*.pyd
+*.pdb
 
-# Virtual environment
-env/
+# Virtual Environment
 venv/
+.env
+.env.*
+
+# But DO NOT ignore the example template
+!.env.example
+
+# VSCode
+.vscode/
+
+# OS Files
+.DS_Store
+Thumbs.db
 
 # Logs
 *.log
 
-# OS files
-.DS_Store
-Thumbs.db
+# Test Cache
+.pytest_cache/
+.coverage
 
-# Editor folders
-.vscode/
+# MySQL/PGSQL dump files
+*.sql
 
-# Test artifacts
-*.pytest_cache/
+# Redis dump
+dump.rdb
+
+# Ignore compiled docs
+*.docx
+*.pdf
+
+# Bytecode
+*.egg-info/
+.eggs/
+dist/
+build/

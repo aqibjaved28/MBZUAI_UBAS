@@ -1,10 +1,6 @@
-import redis
-import psycopg2
 import json
 from psycopg2.extras import Json
-from db import get_db_connection
-
-r = redis.Redis(host='localhost', port=6379, db=0)
+from config import get_db_connection, redis_client, STREAM_KEY
 
 def write_to_postgres(event):
     conn = get_db_connection()
@@ -12,6 +8,7 @@ def write_to_postgres(event):
     query = """
         INSERT INTO user_behavior (id, user_id, event_type, page_url, device_type, metadata, timestamp, ip_address)
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+        ON CONFLICT (id) DO NOTHING
     """
     cur.execute(query, (
         event["id"],
@@ -30,7 +27,7 @@ def write_to_postgres(event):
 def consume():
     last_id = '0-0'
     while True:
-        entries = r.xread({'user_behavior_stream': last_id}, block=0, count=1)
+        entries = redis_client.xread({STREAM_KEY: last_id}, block=0, count=1)
         for stream, messages in entries:
             for msg_id, msg in messages:
                 decoded_msg = {k.decode(): v.decode() for k, v in msg.items()}
