@@ -1,4 +1,4 @@
-# 📊 MBZUAI-UBAS devloped by Muhammad Aqib Javed
+# 📊 MBZUAI@UBAS devloped by Muhammad Aqib Javed
 
 A lightweight, real-time user behavior tracking system built using FastAPI, Redis Streams, and PostgreSQL.
 
